@@ -8,6 +8,8 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'Calculadora simples';
 
+  expressionDisplay: string = '';
+
   calValue: number = 0;
   functionType: string = 'Sem expressão';
 
@@ -15,7 +17,11 @@ export class AppComponent {
   firstNumber: number = 0;
   secondNumber: number = 0;
 
-  onKeydown(event: KeyboardEvent): void {
+  test(event: KeyboardEventInit): void {
+    console.log(event.key);
+  }
+
+  onKeydown(event: KeyboardEventInit): void {
 
     switch(event.key) {
       case '0': this.onClickValue('0', 'number');
@@ -70,6 +76,11 @@ export class AppComponent {
       case 'c':
       case 'C': this.onClickValue('C', 'function');
       break;
+
+
+      case '.':
+      case ',': this.onClickValue('.', 'function');
+      break;
     }
   }
 
@@ -82,15 +93,33 @@ export class AppComponent {
   }
 
   onNumberClick(value: string) {
+    if (this.calNumber.length > 7) return;
+
     if (this.calNumber != 'noValue') {
       this.calNumber += value;
     } else {
       this.calNumber = value;
     }
     this.calValue = parseFloat(this.calNumber);
+
   }
 
   onFunctionClick(value: string) {
+    if (value == '+/-') {
+      this.calValue *= -1;
+      return;
+    }
+
+    if (value == "=" && this.functionType == 'Sem expressão') {
+      return;
+    }
+
+    if (value == ".") {
+      if (this.calNumber.includes(".")) return;
+
+      this.calNumber += ".";
+      return;
+    }
 
     if (value == 'C') {
       this.clearAll();
@@ -99,8 +128,13 @@ export class AppComponent {
       this.calValue = 0;
       this.calNumber = 'noValue';
       this.functionType = value;
+      this.expressionDisplay = `${this.firstNumber} ${this.functionType}`;
+
+
     } else if (this.functionType != 'Sem expressão') {
+          if (this.functionType == value) return
       this.secondNumber = this.calValue;
+      this.expressionDisplay = `${this.firstNumber} ${this.functionType} ${this.secondNumber}`;
 
       this.calculateValue(value);
     }
@@ -118,8 +152,14 @@ export class AppComponent {
     }
 
     if (this.functionType == '/') {
+      if (this.firstNumber == 0 || this.secondNumber == 0) {
+        alert("Não é possível dividir por zero.");
+        this.clearAll();
+      } else {
       const TOTAL = this.firstNumber / this.secondNumber;
       this.totalAssignValues(TOTAL, value);
+      }
+
     }
 
     if (this.functionType == '*') {
@@ -143,9 +183,13 @@ export class AppComponent {
     if (value == '=') this.onEqualPress();
   }
 
-
-
   onEqualPress() {
+
+    if (this.functionType == 'Sem expressão') {
+      return;
+    }
+
+    this.expressionDisplay += ` = ${this.calValue}`;
     this.firstNumber = 0;
     this.secondNumber = 0;
     this.functionType = 'Sem expressão';
@@ -158,5 +202,6 @@ export class AppComponent {
     this.calValue = 0;
     this.functionType = 'Sem expressão';
     this.calNumber = 'noValue';
+    this.expressionDisplay = '';
   }
 }
