@@ -1,6 +1,10 @@
 <div
   class="background-view min-w-screen min-h-screen bg-teal-900 flex items-center justify-center px-5 py-5"
-  (keypress)="onKeydown($event)" tabindex="0"
+  (keypress)="onKeydown($event)"
+  (keydown.esc)="onKeydown($event)"
+  (keydown.backspace)="onKeydown($event)"
+  (keydown.delete)="onKeydown($event)"
+  tabindex="0"
 >
   <div
     class="calculator-view w-full mx-auto rounded-xl shadow-xl text-gray-800 bg-gray-900 relative overflow-hidden px-3 py-3"

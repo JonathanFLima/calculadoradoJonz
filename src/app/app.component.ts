@@ -22,6 +22,7 @@ export class AppComponent {
   }
 
   onKeydown(event: KeyboardEventInit): void {
+    console.log(event.key);
 
     switch(event.key) {
       case '0': this.onClickValue('0', 'number');
@@ -74,9 +75,13 @@ export class AppComponent {
       break;
 
       case 'c':
-      case 'C': this.onClickValue('C', 'function');
+      case 'C':
+      case 'Escape': this.onClickValue('C', 'function');
       break;
 
+      case 'Delete':
+      case 'Backspace': this.onClickValue('DEL', 'function');
+      break;
 
       case '.':
       case ',': this.onClickValue('.', 'function');
@@ -107,6 +112,17 @@ export class AppComponent {
   onFunctionClick(value: string) {
     if (value == '+/-') {
       this.calValue *= -1;
+      return;
+    }
+
+    if (value == 'DEL') {
+      let result = this.calNumber.substring(0, this.calNumber.length-1);;
+      this.calNumber = result;
+
+      if (this.calNumber == "") this.calNumber = "0"
+      this.calValue = parseFloat(this.calNumber);
+
+
       return;
     }
 
