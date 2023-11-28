@@ -116,12 +116,15 @@ export class AppComponent {
     }
 
     if (value == 'DEL') {
-      let result = this.calNumber.substring(0, this.calNumber.length-1);;
+      if (this.calValue == 0) {
+        return
+      } else {
+      let result = this.calNumber.substring(0, this.calNumber.length-1);
       this.calNumber = result;
+      }
 
       if (this.calNumber == "") this.calNumber = "0"
       this.calValue = parseFloat(this.calNumber);
-
 
       return;
     }
